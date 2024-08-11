@@ -1,80 +1,63 @@
 package service.impl;
 
 import model.User;
+import repository.UserRepository;
 import service.BaseService;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserService implements BaseService<User> {
 
-    private List<User> users = new ArrayList<>();
+    UserRepository userRepository;
 
     public UserService() {
-            users.add(new User("admin", "admin123", "admin"));
-            users.add(new User("manager", "manager123", "manager"));
-            users.add(new User("client", "client123", "client"));
+        userRepository = new UserRepository();
     }
 
     @Override
     public void add(User user) {
-      if(!existUser(user.getUserName())){
-          users.add(user);
-
-      }
+        boolean b = existUser(user.getUserName());
+        if (b) {
+            userRepository.save(user);
+        }
     }
 
-    public User findUser(String userName,String password){
-        for(User user : users){
-            if(user.getUserName().equals(userName) && user.getPassword().equals(password)){
-                return user;
-            }
-        }
-        return null;
+    public User findUser(String userName, String password) {
+        User user = userRepository.findUser(userName, password);
+        return user;
     }
 
     @Override
     public void update(User user) {
-        if(user.getUserName() != null &&
-        user.getPassword() != null &&
-        user.getRole() != null){
-            User byId = findById(user.getId());
-            if(byId != null){
-                users.remove(byId);
-                users.add(user);
-            }
+        User byId = userRepository.findById(user.getId());
+        if (byId != null) {
+            userRepository.save(user);
         }
     }
 
     @Override
     public void delete(User user) {
-        User byId = findById(user.getId());
-        if(byId != null) {
-            users.remove(byId);
+        User byId = userRepository.findById(user.getId());
+        if (byId != null) {
+            userRepository.delete(user);
         }
+    }
+
+    @Override
+    public User get(Integer id) {
+        User byId = userRepository.findById(id);
+        return byId;
     }
 
     @Override
     public List<User> findAll() {
-        return users;
-    }
-
-    @Override
-    public User findById(Integer id) {
-        for(User user : users){
-            if(user.getId() == id){
-                return user;
-            }
-        }
-        return null;
+        Optional<List<User>> all = userRepository.findAll();
+        return all.get();
     }
 
     public boolean existUser(String userName) {
-        for (User user : users) {
-            if (user.getUserName().equals(userName)) {
-                return true;
-            }
-        }
-        return false;
+        User user = userRepository.existUser(userName);
+        return user != null;
     }
 }

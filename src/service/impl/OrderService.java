@@ -2,82 +2,69 @@ package service.impl;
 
 import model.Car;
 import model.Order;
+import model.User;
+import repository.OrderRepository;
 import service.BaseService;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class OrderService implements BaseService<Order> {
-    List<Order> orders = new ArrayList<>();
+    OrderRepository orderRepository;
+
+    public OrderService() {
+        orderRepository = new OrderRepository();
+    }
 
     @Override
     public void add(Order order) {
-        orders.add(order);
+        orderRepository.save(order);
     }
 
     @Override
     public void update(Order order) {
-        Order byId = findById(order.getOrderId());
+        Order byId = orderRepository.findById(order.getOrderId());
         if (byId != null) {
-            orders.remove(byId);
-            orders.add(order);
+            orderRepository.save(order);
         }
     }
 
     @Override
     public void delete(Order order) {
-        if(order.getStatus().equals("canceled")){
-            orders.remove(order);
+        boolean b = cancelOrder(order.getOrderId());
+        if (b) {
+            orderRepository.remove(order);
         }
+    }
+
+    @Override
+    public Order get(Integer id) {
+        Order byId = orderRepository.findById(id);
+        return byId;
     }
 
     @Override
     public List<Order> findAll() {
-        return orders;
-    }
-
-    @Override
-    public Order findById(Integer id) {
-        for (Order order : orders) {
-            if (order.getOrderId().equals(id)) {
-                return order;
-            }
-        }
-        return null;
+        Optional<List<Order>> all = orderRepository.findAll();
+        return all.get();
     }
 
     public boolean updateOrderStatus(String orderId, String status) {
-        for (Order order : orders) {
-            if (order.getOrderId().equals(orderId)) {
-                order.setStatus(status);
-                return true;
-            }
-        }
-        return false;
+        Integer i = orderRepository.updateOrderStatus(orderId, status);
+        return i != null;
     }
-    public boolean cancelOrder(String orderId) {
-        for (Order order : orders) {
-            if (order.getOrderId().equals(orderId)) {
-                order.setStatus("canceled");
-                return true;
-            }
+
+    public boolean cancelOrder(Integer orderId) {
+        Order byId = orderRepository.findById(orderId);
+        if (byId != null) {
+            return true;
         }
         return false;
     }
 
-    public List<Order> searchOrders(LocalDateTime date, String clientName, String status, Car car) {
-        List<Order> result = new ArrayList<>();
-        for (Order order : orders) {
-            boolean matches = true;
-            if (date != null && !order.getDate().equals(date)) matches = false;
-            if (clientName != null && !order.getClient().getUserName().equalsIgnoreCase(clientName)) matches = false;
-            if (status != null && !order.getStatus().equalsIgnoreCase(status)) matches = false;
-            if (car != null && !order.getCar().equals(car)) matches = false;
-            if (matches) result.add(order);
-        }
-        return result;
+    public List<Order> searchOrders(Date date, User client, String status, Car car) {
+        Optional<List<Order>> orders = orderRepository.searchOrders(date, client, status, car);
+        return orders.get();
     }
 
 }

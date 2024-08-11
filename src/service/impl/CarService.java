@@ -1,70 +1,62 @@
 package service.impl;
 
 import model.Car;
+import repository.CarRepository;
 import service.BaseService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CarService implements BaseService<Car> {
-    private List<Car> cars = new ArrayList<>();
-    @Override
-    public void add(Car car) {
-     cars.add(car);
+    CarRepository carRepository;
+
+    public CarService() {
+        carRepository = new CarRepository();
     }
 
     @Override
+    public void add(Car car) {
+        carRepository.save(car);
+    }
+
+
+    @Override
     public void update(Car car) {
-        Car byId = findById(car.getId());
+        Car byId = carRepository.findById(car.getId());
         if (byId != null) {
-            cars.remove(byId);
-            cars.add(car);
+            carRepository.update(car);
         }
     }
 
     @Override
     public void delete(Car car) {
-        Car byId = findById(car.getId());
+        Car byId = carRepository.findById(car.getId());
         if (byId != null) {
-            cars.remove(byId);
+            carRepository.remove(car);
         }
+    }
+
+    @Override
+    public Car get(Integer id) {
+        Car byId = carRepository.findById(id);
+        return byId;
     }
 
     @Override
     public List<Car> findAll() {
-        return cars;
+        Optional<List<Car>> all = carRepository.findAll();
+        return all.orElseGet(ArrayList::new);
     }
 
-    @Override
-    public Car findById(Integer id) {
-        for (Car car : cars) {
-            if (car.getId() == id) {
-                return car;
-            }
-        }
-        return null;
+    public List<Car> getCarByDetails(String make, String model, Integer year) {
+        Optional<List<Car>> carByDetails = carRepository.getCarByDetails(make, model, year);
+        return carByDetails.get();
     }
 
-    public Car getCarByDetails(String make, String model, Integer year) {
-        for (Car car : cars) {
-            if (car.getMake().equals(make) && car.getModel().equals(model) && car.getYear() == year) {
-                return car;
-            }
-        }
-        return null;
-    }
     public List<Car> searchCars(String make, String model, int year, double price, String condition) {
-        List<Car> result = new ArrayList<>();
-        for (Car car : cars) {
-            boolean matches = true;
-            if (make != null && !car.getMake().equalsIgnoreCase(make)) matches = false;
-            if (model != null && !car.getModel().equalsIgnoreCase(model)) matches = false;
-            if (year != -1 && car.getYear() != year) matches = false;
-            if (price != -1 && car.getPrice() != price) matches = false;
-            if (condition != null && !car.getCondition().equalsIgnoreCase(condition)) matches = false;
-            if (matches) result.add(car);
-        }
-        return result;
+        Optional<List<Car>> cars = carRepository.searchCars(make, model, year, price, condition);
+        return cars.get();
     }
 
 }

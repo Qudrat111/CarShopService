@@ -1,85 +1,79 @@
 package model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * Represents a car in the system.
+ * <p>
+ * The {@code Car} class models a car entity with fields for car ID, make, model, year, condition, and price.
+ * Lombok annotations are used to automatically generate boilerplate code such as getters, setters, constructors, and
+ * methods like {@code toString()}, {@code equals()}, and {@code hashCode()}.
+ * </p>
+ *
+ * @see lombok.Data
+ * @see lombok.NoArgsConstructor
+ * @see lombok.AllArgsConstructor
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Car {
+
+    /**
+     * The unique identifier for the car.
+     * <p>
+     * Initialized to {@code 0} by default.
+     * </p>
+     */
     private Integer id = 0;
+
+    /**
+     * The make of the car.
+     * <p>
+     * Represents the manufacturer of the car, such as "Toyota", "Ford", etc.
+     * </p>
+     */
     private String make;
+
+    /**
+     * The model of the car.
+     * <p>
+     * Represents the specific model of the car, such as "Corolla", "Mustang", etc.
+     * </p>
+     */
     private String model;
-    private int year;
 
-    public String getCondition() {
-        return condition;
-    }
+    /**
+     * The year of manufacture of the car.
+     * <p>
+     * Represents the year in which the car was manufactured.
+     * </p>
+     */
+    private Integer year;
 
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
-
+    /**
+     * The condition of the car.
+     * <p>
+     * Represents the state of the car, such as "New", "Used", etc.
+     * </p>
+     */
     private String condition;
+
+    /**
+     * The price of the car.
+     * <p>
+     * Represents the monetary value of the car.
+     * </p>
+     */
     private Double price;
 
-    public Car() {
-
-    }
-    public Car(String make, String model, int year, String condition, Double price) {
-        id++;
+    public Car(String make, String model, Integer year, String condition, Double price) {
         this.make = make;
         this.model = model;
         this.year = year;
         this.condition = condition;
-        this.price = price;
-    }
-
-    @Override
-    public String toString() {
-        return "Car{" +
-                "id=" + id +
-                ", make='" + make + '\'' +
-                ", model='" + model + '\'' +
-                ", year=" + year +
-                ", condition='" + condition + '\'' +
-                ", price=" + price +
-                '}';
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getMake() {
-        return make;
-    }
-
-    public void setMake(String make) {
-        this.make = make;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
         this.price = price;
     }
 }

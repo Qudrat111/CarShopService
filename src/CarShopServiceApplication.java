@@ -7,6 +7,7 @@ import response.OrderResponse;
 import response.UserResponse;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -87,7 +88,7 @@ public class CarShopServiceApplication {
                 viewClientsAndEmployees();
                 break;
             case 4:
-                currentUser =        null;
+                currentUser = null;
                 break;
             default:
                 System.out.println("Invalid choice");
@@ -227,7 +228,7 @@ public class CarShopServiceApplication {
             ApiResponse carByDetails = carResponse.getCarByDetails(make, model, year);
             Car car = (Car) carByDetails.getData();
             if (car != null) {
-                ApiResponse pending = orderResponse.createOrder(car, client, "pending", LocalDateTime.now());
+                ApiResponse pending = orderResponse.createOrder(car, client, "pending", new Date());
                 System.out.println(pending);
             } else {
                 System.out.println("Car not found");
@@ -256,8 +257,7 @@ public class CarShopServiceApplication {
     }
     private static void cancelOrder() {
         System.out.println("Enter order ID: ");
-        String orderId = scanner.nextLine();
-
+        Integer orderId = scanner.nextInt();
         ApiResponse apiResponse = orderResponse.cancelOrder(orderId);
         System.out.println(apiResponse);
 
