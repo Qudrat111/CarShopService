@@ -17,9 +17,45 @@
         <lombok.version>1.18.34</lombok.version>
         <liquibase.version>4.22.0</liquibase.version>
         <junitApi.version>5.11.0-M2</junitApi.version>
+        <jackson.version>2.17.2</jackson.version>
+        <mapstruct.version>1.4.2.Final</mapstruct.version>
+        <springaop.version>6.1.11</springaop.version>
+        <hibernate.version>8.0.1.Final</hibernate.version>
+        <jakartaservlet.version>6.1.0-M2</jakartaservlet.version>
+        <validation.version>2.0.1.Final</validation.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${springaop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${validation.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakartaservlet.version}</version>
+        </dependency>
         <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
