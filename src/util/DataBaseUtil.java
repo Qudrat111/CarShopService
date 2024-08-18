@@ -9,16 +9,7 @@ public class DataBaseUtil {
     private static final String USER = "postgres";
     private static final String PASSWORD = "1234";
 
-    static {
-        try {
-            // Ensure the driver is loaded (optional for newer JDBC versions)
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Failed to load JDBC driver", e);
-        }
-    }
-
-    public static Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }

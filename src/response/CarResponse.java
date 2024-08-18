@@ -27,7 +27,7 @@ public class CarResponse {
     }
 
     public ApiResponse getCarByDetails(String make, String model, int year) {
-        Car carByDetails = carService.getCarByDetails(make, model, year);
+        Car carByDetails = (Car) carService.getCarByDetails(make, model, year);
         if(carByDetails != null) {
             return new ApiResponse("success", 200, carByDetails);
         }

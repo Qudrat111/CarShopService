@@ -12,33 +12,31 @@ import java.util.List;
 import java.util.Optional;
 
 public class OrderRepository {
-    Connection con;
+    DataBaseUtil dataBaseUtil;
 
     public OrderRepository() {
-        try {
-            con = DataBaseUtil.getConnection();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        dataBaseUtil = new DataBaseUtil();
     }
 
+
     public void save(Order order) {
-        try {
+        try (Connection con = dataBaseUtil.getConnection()) {
             PreparedStatement preparedStatement = con.prepareStatement("insert into orders (order_id,car_id,user_id,status,date) " +
                     "values (?,?,?,?,?);");
             preparedStatement.setInt(1, order.getOrderId());
             preparedStatement.setInt(2, order.getCar().getId());
             preparedStatement.setInt(3, order.getClient().getId());
             preparedStatement.setString(4, order.getStatus());
-            preparedStatement.setDate(5, order.getDate());
-
+            preparedStatement.setDate(5, (Date) order.getDate());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void update(Order order) {
-        try {
+        try (Connection con = dataBaseUtil.getConnection()) {
             PreparedStatement preparedStatement = con.prepareStatement("update orders set " +
                     "order_id = ?," +
                     "car_id = ?," +
@@ -50,9 +48,10 @@ public class OrderRepository {
             preparedStatement.setInt(2, order.getCar().getId());
             preparedStatement.setInt(3, order.getClient().getId());
             preparedStatement.setString(4, order.getStatus());
-            preparedStatement.setDate(5, order.getDate());
+            preparedStatement.setDate(5, (Date) order.getDate());
             preparedStatement.setInt(6, order.getId());
             preparedStatement.executeUpdate();
+            preparedStatement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -62,7 +61,7 @@ public class OrderRepository {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         Order order = null;
-        try {
+        try (Connection con = dataBaseUtil.getConnection()) {
             preparedStatement = con.prepareStatement("select * from orders where" +
                     "id = ?");
             preparedStatement.setInt(1, id);
@@ -80,6 +79,8 @@ public class OrderRepository {
                 order.setStatus(resultSet.getString("status"));
                 order.setDate(resultSet.getDate("date"));
             }
+            preparedStatement.close();
+            resultSet.close();
             return order;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -87,17 +88,18 @@ public class OrderRepository {
     }
 
     public void remove(Order order) {
-        try {
+        try (Connection con = dataBaseUtil.getConnection()) {
             PreparedStatement preparedStatement = con.prepareStatement("delete * from cars where id = ?");
             preparedStatement.setInt(1, order.getId());
             preparedStatement.executeUpdate();
+            preparedStatement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public Optional<List<Order>> findAll() {
-        try {
+        try (Connection con = dataBaseUtil.getConnection()) {
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from orders");
             List<Order> orders = new ArrayList<>();
@@ -114,6 +116,8 @@ public class OrderRepository {
                 order.setDate(resultSet.getDate("date"));
                 orders.add(order);
             }
+            statement.close();
+            resultSet.close();
             return Optional.of(orders);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -121,18 +125,20 @@ public class OrderRepository {
     }
 
     public Integer updateOrderStatus(String orderId, String status) {
-        try {
+        try (Connection con = dataBaseUtil.getConnection()) {
             PreparedStatement preparedStatement = con.prepareStatement("update orders set status = ? where id = ?");
             preparedStatement.setString(1, status);
             preparedStatement.setString(2, orderId);
-            return preparedStatement.executeUpdate();
+            int i = preparedStatement.executeUpdate();
+            preparedStatement.close();
+            return i;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public Optional<List<Order>> searchOrders(Date date, User client, String status, Car car) {
-        try {
+        try (Connection con = dataBaseUtil.getConnection()) {
             List<Order> orders = new ArrayList<>();
             PreparedStatement preparedStatement = con.prepareStatement("select * from orders where " +
                     "date = ? and user_id = ? and status = ? and car_id = ?");
@@ -154,6 +160,8 @@ public class OrderRepository {
                 order.setDate(resultSet.getDate("date"));
                 orders.add(order);
             }
+            preparedStatement.close();
+            resultSet.close();
             return Optional.of(orders);
         } catch (SQLException e) {
             throw new RuntimeException(e);

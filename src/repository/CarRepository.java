@@ -9,18 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 public class CarRepository {
-    Connection con;
+    DataBaseUtil dataBaseUtil;
 
     public CarRepository() {
-        try {
-            con = DataBaseUtil.getConnection();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        dataBaseUtil = new DataBaseUtil();
     }
 
     public void save(Car car) {
-        try {
+        try (Connection con = dataBaseUtil.getConnection()) {
             PreparedStatement preparedStatement = con.prepareStatement("insert into cars (make,model,year,condition,price) " +
                     "values (?,?,?,?,?);");
             preparedStatement.setString(1, car.getMake());
@@ -29,13 +25,14 @@ public class CarRepository {
             preparedStatement.setString(4, car.getCondition());
             preparedStatement.setDouble(5, car.getPrice());
             preparedStatement.executeUpdate();
+            preparedStatement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void update(Car car) {
-        try {
+        try (Connection con = dataBaseUtil.getConnection()) {
             PreparedStatement preparedStatement = con.prepareStatement("update cars set " +
                     "make = ?," +
                     "model = ?," +
@@ -50,6 +47,7 @@ public class CarRepository {
             preparedStatement.setDouble(5, car.getPrice());
             preparedStatement.setInt(6, car.getId());
             preparedStatement.executeUpdate();
+            preparedStatement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -59,7 +57,7 @@ public class CarRepository {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         Car car = null;
-        try {
+        try (Connection con = dataBaseUtil.getConnection()) {
             preparedStatement = con.prepareStatement("select * from cars where" +
                     "id = ?");
             preparedStatement.setInt(1, id);
@@ -73,6 +71,8 @@ public class CarRepository {
                 car.setCondition(resultSet.getString("condition"));
                 car.setPrice(resultSet.getDouble("price"));
             }
+            preparedStatement.close();
+            resultSet.close();
             return car;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -80,17 +80,18 @@ public class CarRepository {
     }
 
     public void remove(Car car) {
-        try {
+        try (Connection con = dataBaseUtil.getConnection()) {
             PreparedStatement preparedStatement = con.prepareStatement("delete * from cars where id = ?");
             preparedStatement.setInt(1, car.getId());
             preparedStatement.executeUpdate();
+            preparedStatement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public Optional<List<Car>> findAll() {
-        try {
+        try (Connection con = dataBaseUtil.getConnection()) {
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from cars");
             List<Car> cars = new ArrayList<>();
@@ -104,14 +105,16 @@ public class CarRepository {
                 car.setPrice(resultSet.getDouble("price"));
                 cars.add(car);
             }
+            statement.close();
+            resultSet.close();
             return Optional.of(cars);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Optional<List<Car>> getCarByDetails(String make, String model, Integer year){
-        try {
+    public Optional<List<Car>> getCarByDetails(String make, String model, Integer year) {
+        try (Connection con = dataBaseUtil.getConnection()) {
             PreparedStatement preparedStatement = con.prepareStatement("select * from cars where " +
                     "make = ? and model = ? and year = ?");
             preparedStatement.setString(1, make);
@@ -129,14 +132,16 @@ public class CarRepository {
                 car.setPrice(resultSet.getDouble("price"));
                 cars.add(car);
             }
+            preparedStatement.close();
+            resultSet.close();
             return Optional.of(cars);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Optional<List<Car>> searchCars(String make, String model, int year, double price, String condition){
-        try {
+    public Optional<List<Car>> searchCars(String make, String model, int year, double price, String condition) {
+        try (Connection con = dataBaseUtil.getConnection()) {
             PreparedStatement preparedStatement = con.prepareStatement("select * from cars where " +
                     "make = ? and model = ? and year = ? and price = ? and condition = ?");
             preparedStatement.setString(1, make);
@@ -156,6 +161,8 @@ public class CarRepository {
                 car.setPrice(resultSet.getDouble("price"));
                 cars.add(car);
             }
+            preparedStatement.close();
+            resultSet.close();
             return Optional.of(cars);
         } catch (SQLException e) {
             throw new RuntimeException(e);

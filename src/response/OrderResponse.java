@@ -6,12 +6,13 @@ import model.User;
 import service.impl.OrderService;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public class OrderResponse {
     private OrderService orderService = new OrderService();
-    public ApiResponse createOrder(Car car, User client, String pending, LocalDateTime now) {
-        Order order = new Order(car, client, pending, now);
+    public ApiResponse createOrder(Car car, User client, String pending, Date now) {
+        Order order = new Order(now,pending,client,car);
      orderService.add(order);
      return new ApiResponse("succes",200,order);
     }
@@ -30,7 +31,7 @@ public class OrderResponse {
 
     }
 
-    public ApiResponse cancelOrder(String orderId) {
+    public ApiResponse cancelOrder(Integer orderId) {
         boolean b = orderService.cancelOrder(orderId);
         if (b){
             return new ApiResponse("succes",200,"Order cancelled");

@@ -6,6 +6,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="1" author="qudratilla">
+        <comment>This table stores car details including make, model, year, condition, and price.</comment>
         <createTable tableName="cars" schemaName="cars_schema">
             <column name="id" type="SERIAL">
                 <constraints primaryKey="true"/>
@@ -29,6 +30,7 @@
     </changeSet>
 
     <changeSet id="2" author="qudratilla">
+        <comment>This table records orders, linking cars with users and tracking order status and date.</comment>
         <createTable tableName="orders" schemaName="orders_schema">
             <column name="id" type="SERIAL">
                 <constraints primaryKey="true"/>
@@ -52,6 +54,7 @@
     </changeSet>
 
     <changeSet id="3" author="qudratilla">
+        <comment>This table holds user information including username, password, and role.</comment>
         <createTable tableName="users" schemaName="users_schema">
             <column name="id" type="SERIAL">
                 <constraints primaryKey="true"/>

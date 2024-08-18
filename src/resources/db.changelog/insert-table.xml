@@ -7,6 +7,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="1" author="qudratilla">
+        <comment>This command insert username, password, role to users table schema users_schema</comment>
         <insert tableName="users" schemaName="users_schema">
             <column name="username" value="Qudrat"/>
             <column name="password" value="master12345"/>
@@ -15,6 +16,7 @@
     </changeSet>
 
     <changeSet id="2" author="qudratilla">
+        <comment>This command insert make, model, year to cars table schema cars_schema</comment>
         <insert tableName="cars" schemaName="cars_schema">
             <column name="make" value="General motors"/>
             <column name="model" value="Gentra"/>
@@ -23,10 +25,11 @@
     </changeSet>
 
     <changeSet id="3" author="qudratilla">
+        <comment>This command insert order_id,car_id,user_id,status,date to orders table schema orders_schema</comment>
         <insert tableName="orders" schemaName="orders_schema">
             <column name="order_id" value="1"/>
             <column name="car_id" value="1"/>
-            <column name="car_id" value="1"/>
+            <column name="user_id" value="1"/>
             <column name="status" value="PENDING"/>
             <column name="date" value="now()"/>
         </insert>
