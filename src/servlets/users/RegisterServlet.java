@@ -28,7 +28,10 @@ public class RegisterServlet extends HttpServlet {
             User entity = userMapper.toEntity(userDto1);
             ApiResponse register = userResponse.register(entity);
             resp.setContentType("application/json");
+            resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.getWriter().write(objectMapper.writeValueAsString(register.getData()));
+
+
         }
     }
 }
