@@ -30,14 +30,12 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         req -> req
-                                .anyRequest()
+                                .requestMatchers("/auth/**")
                                 .permitAll()
-//                                .requestMatchers("/auth/**")
-//                                .permitAll()
-//                                .requestMatchers("/swagger-ui/index.html#")
-//                                .permitAll()
-//                                .anyRequest()
-//                                .authenticated()
+                                .requestMatchers("/swagger-ui/index.html#")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated()
                 );
         http
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
